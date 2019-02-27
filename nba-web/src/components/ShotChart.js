@@ -11,14 +11,16 @@ export class ShotChart extends React.Component {
     static propTypes = {
         playerId: PropTypes.number.isRequired,
         minCount: PropTypes.number.isRequired,
-        displayToolTips: PropTypes.bool.isRequired,
         chartType: PropTypes.string.isRequired,
+        displayTooltip: PropTypes.bool.isRequired,
     }
 
     componentDidUpdate() {
         nba.stats.shots({
-            PlayerID: this.props.playerId
+            PlayerID: this.props.playerId,
+            Season: '2016-17',
         }).then((response) => {
+            console.log(response);
             const final_shots = response.shot_Chart_Detail.map(shot => ({
                 x: (shot.locX + 250) / 10,
                 y: (shot.locY + 50) / 10,
@@ -27,14 +29,13 @@ export class ShotChart extends React.Component {
                 shot_made_flag: shot.shotMadeFlag,
             }));
 
-            const { minCount, displayToolTips, chartType } = this.props;
             const courtSelection = d3.select("#shot-chart");
             courtSelection.html('');
             const chart_court = court().width(500);
             const chart_shots = shots()
-                .shotRenderThreshold(minCount)
-                .displayToolTips(displayToolTips)
-                .displayType(chartType);
+                .shotRenderThreshold(this.props.minCount)
+                .displayToolTips(this.props.displayTooltip)
+                .displayType(this.props.chartType);
             courtSelection.call(chart_court);
             courtSelection.datum(final_shots).call(chart_shots);
         });
