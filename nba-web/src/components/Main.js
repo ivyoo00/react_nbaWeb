@@ -1,29 +1,43 @@
 import React from 'react';
-import { ShotChart } from './ShotChart';
 import { Profile } from './Profile';
+import { ShotChart } from './ShotChart';
 import nba from 'nba';
+
+window.nba = nba;
 
 export class Main extends React.Component {
     state = {
-        playerId: nba.findPlayer('Lebron James').playerId,
-        playerInfo: {},
+        playerInfo: {
+            playerId: nba.findPlayer('Lebron James').playerId
+        }
     }
 
     componentDidMount() {
-        nba.stats.playerInfo({ PlayerID: this.state.playerId })
-            .then((info) => {
-                const playerInfo = Object.assign(info.commonPlayerInfo[0], info.playerHeadlineStats[0]);
-                console.log('playerInfo', playerInfo);
-                this.setState({ playerInfo });
-            })
-            .catch((e) => console.log(e))
+        const { playerId } = this.state.playerInfo;
+        nba.stats
+            .playerInfo({PlayerID: playerId})
+            .then(({commonPlayerInfo, playerHeadlineStats}) => {
+                const playerInfo = {
+                    ...commonPlayerInfo[0],
+                    ...playerHeadlineStats[0]
+                };
+
+                this.setState({
+                    playerInfo
+                });
+            });
     }
 
     render() {
         return (
             <div className="main">
                 <Profile playerInfo={this.state.playerInfo} />
-                <ShotChart playerId={this.state.playerId} />
+                <ShotChart
+                    playerId={this.state.playerInfo.playerId}
+                    minCount={2}
+                    displayToolTips={true}
+                    chartType="hexbin"
+                />
             </div>
         );
     }
