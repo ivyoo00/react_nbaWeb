@@ -2,7 +2,9 @@
 
 #shot-chart {
     width: 100%;
-    margin: auto;
+    margin-top: -50px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /********SHOTCHART COURT STYLES****** */
@@ -22,6 +24,7 @@
         margin-top: -10%;
     }
 }
+
 @media (min-width: 78em) {
     #shot-chart-container {
         padding-left: 1em;
@@ -150,3 +153,4 @@ path.shot {
     top: 50%;
     left: 100%;
 }
+
